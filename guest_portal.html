@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to 569 on Berea</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --accent: #C9A961;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --light: #F8F9FA;
+            --cream: #FDF8F3;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            min-height: 100vh;
+            color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.7)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%232C3E50" width="100" height="100"/></svg>');
+            background-size: cover;
+            color: white;
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-welcome {
+            background: rgba(255,255,255,0.15);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero-welcome p {
+            font-size: 0.95rem;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        /* Quick Info Cards */
+        .quick-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: -2rem 0 1.5rem 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .info-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-card-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-card-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* WiFi Card - Prominent */
+        .wifi-card {
+            background: linear-gradient(135deg, var(--primary), #34495E);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .wifi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .wifi-header h2 {
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .wifi-details {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        
+        .wifi-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .wifi-row:last-child { border-bottom: none; }
+        
+        .wifi-label { opacity: 0.8; font-size: 0.9rem; }
+        
+        .wifi-value {
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+        
+        .copy-btn {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        /* Section Cards */
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        
+        .section-header {
+            background: var(--light);
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-header:hover { background: #f0f0f0; }
+        
+        .section-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .section-toggle {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .section-content {
+            padding: 1.25rem;
+            display: none;
+        }
+        
+        .section-content.open { display: block; }
+        
+        .section-toggle.open { transform: rotate(180deg); }
+        
+        /* Info List */
+        .info-list {
+            list-style: none;
+        }
+        
+        .info-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+        
+        .info-list li:last-child { border-bottom: none; }
+        
+        .info-list .icon { font-size: 1.25rem; }
+        
+        .info-list .text {
+            flex: 1;
+        }
+        
+        .info-list .label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-list .detail {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Amenities Grid */
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .amenity-item {
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        .amenity-item .icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .amenity-item .name { font-size: 0.8rem; color: #666; }
+        
+        /* House Rules */
+        .rule-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: flex-start;
+        }
+        
+        .rule-item:last-child { border-bottom: none; }
+        
+        .rule-icon { font-size: 1.25rem; }
+        .rule-text { flex: 1; font-size: 0.95rem; }
+        
+        .rule-important {
+            background: #FFF3CD;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #856404;
+        }
+        
+        /* Emergency Card */
+        .emergency-card {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .emergency-card h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .emergency-numbers {
+            display: grid;
+            gap: 0.75rem;
+        }
+        
+        .emergency-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.15);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+        }
+        
+        .emergency-row a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        /* Contact Button */
+        .contact-fab {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--success);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 4px 20px rgba(39, 174, 96, 0.4);
+            cursor: pointer;
+            text-decoration: none;
+            z-index: 100;
+        }
+        
+        /* Map */
+        .map-placeholder {
+            background: #e0e0e0;
+            height: 200px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        /* Request Form */
+        .request-form {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+        
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        /* Review Card */
+        .review-card {
+            background: linear-gradient(135deg, var(--accent), #D4AF37);
+            color: var(--primary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .review-card h3 { margin-bottom: 0.5rem; }
+        .review-card p { margin-bottom: 1rem; opacity: 0.9; }
+        
+        .review-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        @media (max-width: 400px) {
+            .hero h1 { font-size: 2rem; }
+            .quick-info { grid-template-columns: 1fr 1fr; }
+            .amenities-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <h1>569 on Berea</h1>
+        <p class="hero-subtitle">Muckleneuk, Pretoria</p>
+        <div class="hero-welcome">
+            <p>Welcome! We're delighted to host you. 🏡</p>
+        </div>
+    </section>
+    
+    <div class="container">
+        <!-- Quick Info -->
+        <div class="quick-info">
+            <div class="info-card">
+                <div class="info-card-icon">🔑</div>
+                <div class="info-card-label">Check-In</div>
+                <div class="info-card-value">2:00 PM</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">🚪</div>
+                <div class="info-card-label">Check-Out</div>
+                <div class="info-card-value">10:00 AM</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">🏊</div>
+                <div class="info-card-label">Pool Hours</div>
+                <div class="info-card-value">7AM - 8PM</div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">🤫</div>
+                <div class="info-card-label">Quiet Hours</div>
+                <div class="info-card-value">10PM - 7AM</div>
+            </div>
+        </div>
+        
+        <!-- WiFi Card -->
+        <div class="wifi-card">
+            <div class="wifi-header">
+                <h2>📶 WiFi Access</h2>
+                <button class="copy-btn" onclick="copyPassword()">Copy Password</button>
+            </div>
+            <div class="wifi-details">
+                <div class="wifi-row">
+                    <span class="wifi-label">Network Name</span>
+                    <span class="wifi-value">569Berea_</span>
+                </div>
+                <div class="wifi-row">
+                    <span class="wifi-label">Password</span>
+                    <span class="wifi-value" id="wifiPassword">Alheri1960</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Property Amenities -->
+        <div class="section-card">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h3>🏠 Property Amenities</h3>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content open">
+                <div class="amenities-grid">
+                    <div class="amenity-item">
+                        <div class="icon">📶</div>
+                        <div class="name">Free WiFi</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">🏊</div>
+                        <div class="name">Pool</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">🍳</div>
+                        <div class="name">Kitchen</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">🅿️</div>
+                        <div class="name">Parking</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">🌿</div>
+                        <div class="name">Garden</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">🏔️</div>
+                        <div class="name">Views</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">❄️</div>
+                        <div class="name">Air Con</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">📺</div>
+                        <div class="name">Smart TV</div>
+                    </div>
+                    <div class="amenity-item">
+                        <div class="icon">🧺</div>
+                        <div class="name">Laundry*</div>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 1rem; text-align: center;">*Laundry service available on request (charges apply)</p>
+            </div>
+        </div>
+        
+        <!-- House Rules -->
+        <div class="section-card">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h3>📋 House Rules</h3>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="rule-item">
+                    <span class="rule-icon">🚭</span>
+                    <span class="rule-text"><strong>No Smoking</strong> - Strictly no smoking indoors. Designated outdoor area only. R1,000 cleaning fee applies.</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">🤫</span>
+                    <span class="rule-text"><strong>Quiet Hours</strong> - 10:00 PM to 7:00 AM. Please be considerate of other guests and neighbors.</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">🏊</span>
+                    <span class="rule-text"><strong>Pool Safety</strong> - No lifeguard. Children under 16 must be supervised. No diving. No glass in pool area.</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">👥</span>
+                    <span class="rule-text"><strong>Visitors</strong> - Day visitors in outdoor areas only with prior approval. No unregistered overnight guests.</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">🍳</span>
+                    <span class="rule-text"><strong>Kitchen</strong> - Shared kitchen. Please clean up after use - wash dishes, wipe surfaces, sweep spills.</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">🐾</span>
+                    <span class="rule-text"><strong>No Pets</strong> - Unless specifically arranged in advance.</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">🔐</span>
+                    <span class="rule-text"><strong>Security</strong> - Main gate closes at 10 PM. Lock your room when leaving. Don't share access codes.</span>
+                </div>
+                
+                <div class="rule-important">
+                    ⚠️ <strong>Important:</strong> Violation of house rules may result in eviction without refund. Full rules provided at check-in.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Kitchen Guide -->
+        <div class="section-card">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h3>🍳 Kitchen Guide</h3>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <ul class="info-list">
+                    <li>
+                        <span class="icon">🍽️</span>
+                        <div class="text">
+                            <span class="label">Available Equipment</span>
+                            <span class="detail">Stove, oven, microwave, kettle, toaster, fridge/freezer, pots & pans, dishes, cutlery</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">☕</span>
+                        <div class="text">
+                            <span class="label">Complimentary</span>
+                            <span class="detail">Tea, coffee, sugar, salt & pepper</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🧹</span>
+                        <div class="text">
+                            <span class="label">Please Remember</span>
+                            <span class="detail">Wash dishes immediately, wipe surfaces, label food in fridge, dispose of rubbish properly</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🛒</span>
+                        <div class="text">
+                            <span class="label">Nearest Shops</span>
+                            <span class="detail">Checkers & Woolworths at Brooklyn Mall (5 min drive)</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Local Area -->
+        <div class="section-card">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h3>📍 Local Area</h3>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <div class="map-placeholder">
+                    📍 569 Berea Road, Muckleneuk<br>
+                    <small>Open in Google Maps</small>
+                </div>
+                <ul class="info-list">
+                    <li>
+                        <span class="icon">🏛️</span>
+                        <div class="text">
+                            <span class="label">Union Buildings</span>
+                            <span class="detail">10 minute drive - beautiful views and gardens</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🛍️</span>
+                        <div class="text">
+                            <span class="label">Brooklyn Mall</span>
+                            <span class="detail">5 minute drive - shops, restaurants, Checkers, Woolworths</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🏥</span>
+                        <div class="text">
+                            <span class="label">Netcare Jakaranda Hospital</span>
+                            <span class="detail">5 minutes drive</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🎓</span>
+                        <div class="text">
+                            <span class="label">University of Pretoria</span>
+                            <span class="detail">10 minutes drive</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🍽️</span>
+                        <div class="text">
+                            <span class="label">Restaurants Nearby</span>
+                            <span class="detail">Hatfield, Brooklyn, Waterkloof - 5-10 min drive</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Request Service -->
+        <div class="section-card">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h3>🛎️ Request Service</h3>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <form class="request-form" onsubmit="submitRequest(event)">
+                    <div class="form-group">
+                        <label>Room Number</label>
+                        <select name="room" required>
+                            <option value="">Select your room...</option>
+                            <option>Room 1</option>
+                            <option>Room 2</option>
+                            <option>Room 3</option>
+                            <option>Room 4</option>
+                            <option>Room 5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Service Type</label>
+                        <select name="service" required>
+                            <option value="">Select service...</option>
+                            <option>Extra Towels</option>
+                            <option>Extra Pillows/Blankets</option>
+                            <option>Laundry Service</option>
+                            <option>Late Check-Out Request</option>
+                            <option>Early Check-In Request</option>
+                            <option>Maintenance Issue</option>
+                            <option>Other Request</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Details / Notes</label>
+                        <textarea rows="3" placeholder="Please provide any additional details..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Send Request</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Emergency Contacts -->
+        <div class="emergency-card">
+            <h3>🚨 Emergency Contacts</h3>
+            <div class="emergency-numbers">
+                <div class="emergency-row">
+                    <span>Property Manager</span>
+                    <a href="tel:+27 72 476 8558">📞 Call Now</a>
+                </div>
+                <div class="emergency-row">
+                    <span>Police</span>
+                    <a href="tel:10111">📞 10111</a>
+                </div>
+                <div class="emergency-row">
+                    <span>Ambulance / Fire</span>
+                    <a href="tel:10177">📞 10177</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Review Request -->
+        <div class="review-card">
+            <h3>⭐ Enjoying Your Stay?</h3>
+            <p>We'd love to hear your feedback!</p>
+            <button class="review-btn" onclick="openReview()">Leave a Review</button>
+        </div>
+        
+        <!-- Check-Out Info -->
+        <div class="section-card">
+            <div class="section-header" onclick="toggleSection(this)">
+                <h3>🚪 Check-Out Info</h3>
+                <span class="section-toggle">▼</span>
+            </div>
+            <div class="section-content">
+                <ul class="info-list">
+                    <li>
+                        <span class="icon">⏰</span>
+                        <div class="text">
+                            <span class="label">Check-Out Time</span>
+                            <span class="detail">10:00 AM (late checkout available on request)</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🔑</span>
+                        <div class="text">
+                            <span class="label">Keys</span>
+                            <span class="detail">Please return room key to reception or manager</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">🧹</span>
+                        <div class="text">
+                            <span class="label">Before Leaving</span>
+                            <span class="detail">Check you have all belongings, dispose of rubbish, turn off lights/AC</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon">💰</span>
+                        <div class="text">
+                            <span class="label">Deposit</span>
+                            <span class="detail">R500 deposit refunded after room inspection (if no issues)</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-logo">569 on Berea</div>
+            <p>569 Berea Road, Muckleneuk, Pretoria</p>
+            <p style="margin-top: 0.5rem;">Thank you for staying with us! 🏡</p>
+        </footer>
+    </div>
+    
+    <!-- WhatsApp FAB -->
+    <a href="https://wa.me/27724768558" class="contact-fab" title="WhatsApp Manager">
+        💬
+    </a>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const toggle = header.querySelector('.section-toggle');
+            
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+        
+        function copyPassword() {
+            const password = document.getElementById('wifiPassword').textContent;
+            navigator.clipboard.writeText(password).then(() => {
+                showToast('✓ Password copied to clipboard!');
+            }).catch(() => {
+                showToast('WiFi Password: ' + password);
+            });
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        function submitRequest(e) {
+            e.preventDefault();
+            showToast('✓ Request sent! We\'ll respond shortly.');
+            e.target.reset();
+        }
+        
+        function openReview() {
+            showToast('Thank you! Review link opening...');
+            // Would redirect to Airbnb/Booking.com review page
+        }
+        
+        // Auto-open first section
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstSection = document.querySelector('.section-content');
+            if (firstSection) firstSection.classList.add('open');
+        });
+    </script>
+</body>
+</html>

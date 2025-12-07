@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>569 on Berea - Groundskeeping Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #27AE60;
+            --secondary: #2ECC71;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --light: #F8F9FA;
+            --dark: #2C3E50;
+            --pool: #3498DB;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #27AE60 0%, #2980B9 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 { font-size: 1.25rem; margin-bottom: 0.25rem; }
+        .header-subtitle { font-size: 0.85rem; opacity: 0.9; }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Pool Status Card - Priority */
+        .pool-status-card {
+            background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .pool-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .pool-title h2 {
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .pool-time {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .pool-readings {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .reading-item {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .reading-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        .reading-label {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+        
+        .reading-status {
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .status-good { background: rgba(255,255,255,0.3); }
+        .status-warn { background: rgba(241,196,15,0.5); }
+        .status-bad { background: rgba(231,76,60,0.5); }
+        
+        .pool-checklist {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .pool-check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .pool-check-item.checked {
+            background: rgba(39,174,96,0.4);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .summary-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .summary-value { font-size: 1.75rem; font-weight: 700; color: var(--primary); }
+        .summary-label { font-size: 0.75rem; color: #666; }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            background: var(--dark);
+            color: white;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .task-list { list-style: none; }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            gap: 0.75rem;
+            transition: background 0.3s ease;
+        }
+        
+        .task-item:last-child { border-bottom: none; }
+        .task-item.completed { background: #E8F8F0; }
+        .task-item.completed .task-text { text-decoration: line-through; opacity: 0.6; }
+        
+        .task-checkbox {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .task-checkbox.checked { background: var(--success); border-color: var(--success); }
+        .task-checkbox.checked::after { content: '✓'; color: white; font-weight: bold; }
+        
+        .task-content { flex-grow: 1; }
+        .task-area { font-weight: 600; color: var(--dark); }
+        .task-desc { font-size: 0.85rem; color: #666; }
+        .task-time { font-size: 0.75rem; color: var(--primary); font-weight: 500; }
+        
+        .task-priority {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .priority-urgent { background: #FADBD8; color: #922B21; }
+        .priority-high { background: #FCF3CF; color: #7D6608; }
+        .priority-normal { background: #D5F5E3; color: #196F3D; }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn.active { color: var(--primary); background: #E8F8F0; }
+        .nav-btn span { font-size: 1.5rem; margin-bottom: 0.25rem; }
+        .nav-btn small { font-size: 0.7rem; font-weight: 500; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .weather-card {
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .weather-temp { font-size: 2.5rem; font-weight: 700; }
+        .weather-info { text-align: right; }
+        .weather-condition { font-weight: 600; }
+        .weather-detail { font-size: 0.85rem; opacity: 0.9; }
+        
+        .checklist-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .checklist-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .checklist-grid { display: grid; gap: 0.5rem; }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .checklist-item:last-child { border-bottom: none; }
+        
+        .mini-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .mini-checkbox.checked { background: var(--success); border-color: var(--success); color: white; }
+        
+        .log-entry {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .log-title {
+            font-weight: 600;
+            color: var(--pool);
+            margin-bottom: 1rem;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .btn-log {
+            width: 100%;
+            padding: 1rem;
+            background: var(--pool);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .safety-alert {
+            background: #FCF3CF;
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1rem;
+        }
+        
+        .safety-alert h3 {
+            color: #7D6608;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .safety-alert p {
+            font-size: 0.85rem;
+            color: #5D4E37;
+        }
+        
+        .gate-check {
+            background: var(--danger);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .gate-check h3 { margin-bottom: 0.5rem; }
+        .gate-check p { font-size: 0.9rem; opacity: 0.9; margin-bottom: 1rem; }
+        
+        .gate-btn {
+            background: white;
+            color: var(--danger);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .gate-btn.confirmed { background: var(--success); color: white; }
+        
+        .report-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 1rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🌿 Groundskeeping Portal</h1>
+        <div class="header-subtitle" id="currentDate"></div>
+    </header>
+    
+    <div class="container">
+        <!-- Tasks Tab -->
+        <div id="tasks-tab" class="tab-content active">
+            <!-- Pool Status - Priority Card -->
+            <div class="pool-status-card">
+                <div class="pool-title">
+                    <h2>🏊 Pool Status</h2>
+                    <span class="pool-time">Last check: 06:30</span>
+                </div>
+                
+                <div class="pool-readings">
+                    <div class="reading-item">
+                        <div class="reading-value">7.2</div>
+                        <div class="reading-label">pH Level</div>
+                        <span class="reading-status status-good">✓ Ideal</span>
+                    </div>
+                    <div class="reading-item">
+                        <div class="reading-value">1.5</div>
+                        <div class="reading-label">Chlorine (ppm)</div>
+                        <span class="reading-status status-good">✓ Good</span>
+                    </div>
+                    <div class="reading-item">
+                        <div class="reading-value">✓</div>
+                        <div class="reading-label">Clarity</div>
+                        <span class="reading-status status-good">Crystal</span>
+                    </div>
+                </div>
+                
+                <div class="pool-checklist">
+                    <div class="pool-check-item checked" onclick="togglePoolCheck(this)">
+                        <span>✓</span> Surface skimmed
+                    </div>
+                    <div class="pool-check-item checked" onclick="togglePoolCheck(this)">
+                        <span>✓</span> Walls brushed
+                    </div>
+                    <div class="pool-check-item checked" onclick="togglePoolCheck(this)">
+                        <span>✓</span> Basket emptied
+                    </div>
+                    <div class="pool-check-item checked" onclick="togglePoolCheck(this)">
+                        <span>✓</span> Deck swept
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CRITICAL: Pool Gate Check -->
+            <div class="gate-check">
+                <h3>⚠️ CRITICAL SAFETY CHECK</h3>
+                <p>Pool gate must self-close and latch automatically. Test DAILY.</p>
+                <button class="gate-btn" id="gateBtn" onclick="confirmGate()">
+                    Confirm Gate Tested ✓
+                </button>
+            </div>
+            
+            <!-- Weather -->
+            <div class="weather-card">
+                <div>
+                    <div class="weather-temp">28°C</div>
+                    <div>Pretoria</div>
+                </div>
+                <div class="weather-info">
+                    <div class="weather-condition">☀️ Sunny</div>
+                    <div class="weather-detail">Humidity: 45%</div>
+                    <div class="weather-detail">Wind: 12 km/h</div>
+                </div>
+            </div>
+            
+            <!-- Summary -->
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-value" id="totalTasks">6</div>
+                    <div class="summary-label">Total Tasks</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="completedTasks">2</div>
+                    <div class="summary-label">Complete</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="remainingTasks">4</div>
+                    <div class="summary-label">Remaining</div>
+                </div>
+            </div>
+            
+            <!-- Today's Tasks -->
+            <div class="card">
+                <div class="section-title">
+                    📋 Today's Tasks
+                    <span style="font-size: 0.85rem;">6:00 AM - 2:00 PM</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item completed">
+                        <div class="task-checkbox checked" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-area task-text">Pool - Morning Clean</div>
+                            <div class="task-desc task-text">Skim, brush, chemical test</div>
+                            <div class="task-time">⏰ 06:00 - 08:00</div>
+                        </div>
+                        <span class="task-priority priority-urgent">DONE</span>
+                    </li>
+                    <li class="task-item completed">
+                        <div class="task-checkbox checked" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-area task-text">Pool Deck</div>
+                            <div class="task-desc task-text">Sweep, arrange furniture</div>
+                            <div class="task-time">⏰ 08:00 - 08:30</div>
+                        </div>
+                        <span class="task-priority priority-normal">DONE</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-area">Garden - Lawn</div>
+                            <div class="task-desc">Weekly mowing, edge pathways</div>
+                            <div class="task-time">⏰ 08:30 - 10:30</div>
+                        </div>
+                        <span class="task-priority priority-normal">NORMAL</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-area">Entrance & Pathways</div>
+                            <div class="task-desc">Sweep, remove weeds, curb appeal</div>
+                            <div class="task-time">⏰ 10:30 - 11:30</div>
+                        </div>
+                        <span class="task-priority priority-high">HIGH</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-area">Waste Collection</div>
+                            <div class="task-desc">All bins, sort recycling</div>
+                            <div class="task-time">⏰ 12:00 - 13:00</div>
+                        </div>
+                        <span class="task-priority priority-normal">NORMAL</span>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this)"></div>
+                        <div class="task-content">
+                            <div class="task-area">Final Walkthrough</div>
+                            <div class="task-desc">Store tools, check all areas</div>
+                            <div class="task-time">⏰ 13:30 - 14:00</div>
+                        </div>
+                        <span class="task-priority priority-normal">NORMAL</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Pool Tab -->
+        <div id="pool-tab" class="tab-content">
+            <div class="safety-alert">
+                <h3>⚠️ Pool Safety Reminder</h3>
+                <p>Pool hours: 7:00 AM - 8:00 PM. No lifeguard on duty. Children under 16 must be supervised. No glass in pool area.</p>
+            </div>
+            
+            <!-- Chemical Log Entry -->
+            <div class="log-entry">
+                <div class="log-title">📝 Log Pool Readings</div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>pH Level</label>
+                        <input type="number" step="0.1" min="6.8" max="7.8" placeholder="7.0-7.6 ideal" id="phInput">
+                    </div>
+                    <div class="input-group">
+                        <label>Chlorine (ppm)</label>
+                        <input type="number" step="0.1" min="0" max="5" placeholder="1.0-3.0 ideal" id="chlorineInput">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Water Clarity</label>
+                        <select id="clarityInput">
+                            <option value="crystal">Crystal Clear ✓</option>
+                            <option value="clear">Clear</option>
+                            <option value="cloudy">Slightly Cloudy ⚠</option>
+                            <option value="green">Green/Algae ❌</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Water Temperature</label>
+                        <input type="number" placeholder="°C" id="tempInput">
+                    </div>
+                </div>
+                <button class="btn-log" onclick="logPoolReadings()">
+                    💧 Log Pool Readings
+                </button>
+            </div>
+            
+            <!-- Pool Checklist -->
+            <div class="checklist-card">
+                <div class="checklist-title">🏊 Daily Pool Checklist</div>
+                <div class="checklist-grid">
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Surface skimmed (no debris)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Bottom vacuumed (if needed)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Walls brushed</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Skimmer basket emptied</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Pump strainer checked</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Chemical test complete</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Deck swept clean</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Furniture arranged</span>
+                    </div>
+                    <div class="checklist-item" style="font-weight: 600; color: var(--danger);">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>⚠️ GATE TESTED (self-close & latch)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Life ring present & accessible</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chemical Reference -->
+            <div class="checklist-card">
+                <div class="checklist-title">📊 Chemical Reference</div>
+                <table style="width: 100%; font-size: 0.9rem;">
+                    <tr>
+                        <td><strong>pH Level</strong></td>
+                        <td>7.2 - 7.6</td>
+                        <td style="color: var(--success);">Ideal</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>7.0 - 7.2 / 7.6 - 7.8</td>
+                        <td style="color: var(--warning);">Acceptable</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>&lt;7.0 or &gt;7.8</td>
+                        <td style="color: var(--danger);">Needs adjustment</td>
+                    </tr>
+                    <tr style="border-top: 1px solid #eee;">
+                        <td><strong>Chlorine</strong></td>
+                        <td>1.0 - 3.0 ppm</td>
+                        <td style="color: var(--success);">Ideal</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>&lt;1.0 ppm</td>
+                        <td style="color: var(--danger);">Add chlorine</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>&gt;3.0 ppm</td>
+                        <td style="color: var(--warning);">Let dissipate</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Garden Tab -->
+        <div id="garden-tab" class="tab-content">
+            <div class="checklist-card">
+                <div class="checklist-title">🌱 Lawn Care</div>
+                <div class="checklist-grid">
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Mow lawn (5-7cm height)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Edge along pathways</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Rake clippings</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Water if needed (6-8 AM only)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Remove weeds</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="checklist-card">
+                <div class="checklist-title">🌸 Garden Beds</div>
+                <div class="checklist-grid">
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Remove weeds (pull by roots)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Water plants (check soil first)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Prune dead material</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Remove fallen leaves/debris</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="checklist-card">
+                <div class="checklist-title">🚶 Pathways & Entrance</div>
+                <div class="checklist-grid">
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Sweep all pathways</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Remove weeds from cracks</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Check for trip hazards</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Entrance tidy (WOW factor)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Property sign clean</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="checklist-card">
+                <div class="checklist-title">🗑️ Waste & Recycling</div>
+                <div class="checklist-grid">
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Collect all outdoor bins</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Collect indoor waste (from HK)</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Sort recycling properly</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Replace bin liners</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="mini-checkbox" onclick="toggleMini(this)"></div>
+                        <span>Bin area tidy & odour-free</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Report Tab -->
+        <div id="report-tab" class="tab-content">
+            <div class="card">
+                <div class="section-title" style="background: var(--danger);">
+                    ⚠️ Report an Issue
+                </div>
+                <div style="padding: 1rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 500; display: block; margin-bottom: 0.5rem;">Area</label>
+                        <select id="reportArea" style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 8px;">
+                            <option value="">Select area...</option>
+                            <option>Pool</option>
+                            <option>Pool Deck</option>
+                            <option>Pool Gate (SAFETY)</option>
+                            <option>Garden - Lawn</option>
+                            <option>Garden - Beds</option>
+                            <option>Pathways</option>
+                            <option>Entrance/Driveway</option>
+                            <option>Parking Area</option>
+                            <option>Fencing/Gates</option>
+                            <option>Irrigation System</option>
+                            <option>Outdoor Lighting</option>
+                            <option>Waste/Bins</option>
+                            <option>Equipment/Tools</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 500; display: block; margin-bottom: 0.5rem;">Issue Type</label>
+                        <select id="reportType" style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 8px;">
+                            <option value="">Select type...</option>
+                            <option>Safety Hazard (URGENT)</option>
+                            <option>Maintenance Required</option>
+                            <option>Equipment Broken</option>
+                            <option>Pest/Disease</option>
+                            <option>Storm Damage</option>
+                            <option>Supply Needed</option>
+                            <option>Guest Incident</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-weight: 500; display: block; margin-bottom: 0.5rem;">Description</label>
+                        <textarea id="reportDesc" rows="4" placeholder="Describe the issue in detail..." style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 8px;"></textarea>
+                    </div>
+                    
+                    <button onclick="submitReport()" style="width: 100%; padding: 1rem; background: var(--danger); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+                        📤 Send Report to Manager
+                    </button>
+                </div>
+            </div>
+            
+            <div class="checklist-card">
+                <div class="checklist-title">📦 Request Supplies</div>
+                <select style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 1rem;">
+                    <option value="">Select item...</option>
+                    <option>Pool Chlorine</option>
+                    <option>pH Up / pH Down</option>
+                    <option>Pool Shock</option>
+                    <option>Skimmer Net</option>
+                    <option>Pool Brush</option>
+                    <option>Lawn Mower Fuel</option>
+                    <option>Garden Tools</option>
+                    <option>Bin Liners</option>
+                    <option>Sunscreen/Gloves</option>
+                    <option>Other</option>
+                </select>
+                <textarea placeholder="Quantity needed, notes..." rows="2" style="width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 8px;"></textarea>
+                <button onclick="requestSupply()" style="width: 100%; padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; margin-top: 1rem; cursor: pointer;">
+                    📤 Send Request
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <button class="report-btn" onclick="showTab('report-tab')">⚠️ Report</button>
+    
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="showTab('tasks-tab')">
+            <span>📋</span>
+            <small>Tasks</small>
+        </button>
+        <button class="nav-btn" onclick="showTab('pool-tab')">
+            <span>🏊</span>
+            <small>Pool</small>
+        </button>
+        <button class="nav-btn" onclick="showTab('garden-tab')">
+            <span>🌿</span>
+            <small>Garden</small>
+        </button>
+        <button class="nav-btn" onclick="showTab('report-tab')">
+            <span>⚠️</span>
+            <small>Report</small>
+        </button>
+    </nav>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        function updateDate() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-ZA', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+        }
+        updateDate();
+        
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                if (btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        function toggleTask(checkbox) {
+            checkbox.classList.toggle('checked');
+            checkbox.closest('.task-item').classList.toggle('completed');
+            updateProgress();
+            if (checkbox.classList.contains('checked')) {
+                showToast('✓ Task marked complete!');
+            }
+        }
+        
+        function toggleMini(checkbox) {
+            checkbox.classList.toggle('checked');
+            checkbox.innerHTML = checkbox.classList.contains('checked') ? '✓' : '';
+        }
+        
+        function togglePoolCheck(item) {
+            item.classList.toggle('checked');
+            if (item.classList.contains('checked')) {
+                item.querySelector('span').textContent = '✓';
+            } else {
+                item.querySelector('span').textContent = '○';
+            }
+        }
+        
+        function updateProgress() {
+            const total = document.querySelectorAll('.task-item').length;
+            const completed = document.querySelectorAll('.task-item.completed').length;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('remainingTasks').textContent = total - completed;
+        }
+        
+        function confirmGate() {
+            const btn = document.getElementById('gateBtn');
+            btn.classList.add('confirmed');
+            btn.textContent = '✓ Gate Confirmed Working';
+            showToast('✓ Pool gate safety check logged!');
+        }
+        
+        function logPoolReadings() {
+            const ph = document.getElementById('phInput').value;
+            const chlorine = document.getElementById('chlorineInput').value;
+            
+            if (!ph || !chlorine) {
+                alert('Please enter pH and Chlorine readings');
+                return;
+            }
+            
+            showToast('💧 Pool readings logged: pH ' + ph + ', Chlorine ' + chlorine + ' ppm');
+        }
+        
+        function submitReport() {
+            const area = document.getElementById('reportArea').value;
+            const type = document.getElementById('reportType').value;
+            const desc = document.getElementById('reportDesc').value;
+            
+            if (!area || !type || !desc) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            showToast('📤 Issue reported to Manager!');
+            document.getElementById('reportArea').value = '';
+            document.getElementById('reportType').value = '';
+            document.getElementById('reportDesc').value = '';
+        }
+        
+        function requestSupply() {
+            showToast('📤 Supply request sent to Manager!');
+        }
+    </script>
+</body>
+</html>
