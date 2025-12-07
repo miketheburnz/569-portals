@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>569 on Berea - Manager Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #2C3E50;
@@ -1080,108 +1081,220 @@
     <div class="toast" id="toast">✓ Action completed successfully!</div>
     
     <script>
-        // Update date/time
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+        let supabase = null;
+        let roomsData = [];
+        let bookingsData = [];
+
+        async function initSupabase() {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            await loadRooms();
+            await loadBookings();
+            updateDateTime();
+            setInterval(updateDateTime, 60000);
+            setInterval(async () => {
+                await loadBookings();
+                await updateDashboard();
+            }, 30000);
+        }
+
+        async function loadRooms() {
+            try {
+                const { data } = await supabase
+                    .from('rooms')
+                    .select('*')
+                    .eq('active', true);
+                roomsData = data || [];
+                populateRoomSelect();
+            } catch (error) {
+                console.error('Error loading rooms:', error);
+            }
+        }
+
+        function populateRoomSelect() {
+            const select = document.querySelector('select[name="room"]');
+            if (!select) return;
+            select.innerHTML = '<option value="">Select room...</option>';
+            roomsData.forEach(room => {
+                const option = document.createElement('option');
+                option.value = room.id;
+                option.textContent = `${room.name} (R${room.rate_per_night})`;
+                select.appendChild(option);
+            });
+        }
+
+        async function loadBookings() {
+            try {
+                const { data } = await supabase
+                    .from('bookings')
+                    .select('*')
+                    .order('check_in_date', { ascending: true });
+                bookingsData = data || [];
+                updateDashboard();
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+            }
+        }
+
+        async function updateDashboard() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const occupied = bookingsData.filter(b => {
+                const checkIn = new Date(b.check_in_date);
+                const checkOut = new Date(b.check_out_date);
+                return checkIn <= today && checkOut > today && b.status === 'Checked-In';
+            }).length;
+
+            const checkins = bookingsData.filter(b => {
+                const checkIn = new Date(b.check_in_date);
+                return checkIn.toDateString() === today.toDateString() && b.status === 'Confirmed';
+            }).length;
+
+            document.getElementById('roomsOccupied').textContent = occupied;
+            document.getElementById('checkinsToday').textContent = checkins;
+            document.getElementById('occupancyRate').textContent = Math.round((occupied / 5) * 100) + '%';
+        }
+
         function updateDateTime() {
             const now = new Date();
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-ZA', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-ZA', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
             document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-ZA', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
         }
-        
-        updateDateTime();
-        setInterval(updateDateTime, 60000);
-        
-        // Set default dates
-        document.querySelectorAll('input[type="date"]').forEach(input => {
-            if (!input.value) {
-                input.value = new Date().toISOString().split('T')[0];
-            }
-        });
-        
-        // Tab navigation
+
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
         }
-        
-        // Toast notification
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
-        
-        // Form handlers
-        function handleBooking(e) {
+
+        async function handleBooking(e) {
             e.preventDefault();
-            showToast('✓ Booking created successfully!');
-            e.target.reset();
+            const roomId = document.querySelector('input[name="room"]').value || document.querySelector('select[name="room"]').value;
+            const room = roomsData.find(r => r.id === roomId);
+
+            if (!room) {
+                showToast('Please select a room');
+                return;
+            }
+
+            const checkInDate = new Date(document.querySelector('input[name="checkIn"]').value);
+            const checkOutDate = new Date(document.querySelector('input[name="checkOut"]').value);
+            const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+            try {
+                const { count } = await supabase
+                    .from('bookings')
+                    .select('*', { count: 'exact', head: true });
+                const bookingRef = `BK${String((count || 0) + 1).padStart(4, '0')}`;
+
+                const { error } = await supabase
+                    .from('bookings')
+                    .insert([{
+                        booking_ref: bookingRef,
+                        room_id: roomId,
+                        guest_name: document.querySelector('input[name="guestName"]').value,
+                        guest_email: document.querySelector('input[name="email"]').value,
+                        guest_phone: document.querySelector('input[name="phone"]').value,
+                        check_in_date: document.querySelector('input[name="checkIn"]').value,
+                        check_out_date: document.querySelector('input[name="checkOut"]').value,
+                        number_of_guests: document.querySelector('input[name="guests"]').value,
+                        source: document.querySelector('input[name="source"]').value || 'Direct',
+                        notes: document.querySelector('input[name="notes"]').value,
+                        rate_per_night: room.rate_per_night,
+                        total_amount: nights * room.rate_per_night,
+                        status: 'Confirmed'
+                    }]);
+
+                if (error) throw error;
+
+                showToast('✓ Booking created successfully!');
+                e.target.reset();
+                await loadBookings();
+            } catch (error) {
+                showToast('Error: ' + error.message);
+            }
         }
-        
-        function handleCheckin(e) {
+
+        async function handleCheckin(e) {
             e.preventDefault();
             showToast('✓ Guest checked in successfully!');
             e.target.reset();
+            await loadBookings();
         }
-        
-        function handleCheckout(e) {
+
+        async function handleCheckout(e) {
             e.preventDefault();
             showToast('✓ Guest checked out successfully!');
             e.target.reset();
+            await loadBookings();
         }
-        
-        function handleIncome(e) {
+
+        async function handleIncome(e) {
             e.preventDefault();
             showToast('✓ Income logged successfully!');
             e.target.reset();
         }
-        
-        function handleExpense(e) {
+
+        async function handleExpense(e) {
             e.preventDefault();
             showToast('✓ Expense logged successfully!');
             e.target.reset();
         }
-        
-        function submitDailyReport(e) {
+
+        async function submitDailyReport(e) {
             e.preventDefault();
             showToast('✓ Daily report submitted to GM!');
             e.target.reset();
         }
-        
+
         function checkInGuest(id) {
             showTab('checkin');
-            document.querySelector('#checkinForm input[name="bookingRef"]').value = id;
         }
-        
+
         function checkOutGuest(id) {
-            document.querySelector('#checkoutForm input[name="bookingRef"]').value = id;
-            showToast('Complete checkout for ' + id);
+            showToast('Complete checkout');
         }
-        
+
         function addHousekeepingTask() {
             const task = prompt('Enter housekeeping task:');
             if (task) {
                 showToast('✓ Task added: ' + task);
             }
         }
-        
+
         function addGroundskeepingTask() {
             const task = prompt('Enter groundskeeping task:');
             if (task) {
                 showToast('✓ Task added: ' + task);
             }
         }
+
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+            if (!input.value) {
+                input.value = new Date().toISOString().split('T')[0];
+            }
+        });
+
+        window.addEventListener('load', initSupabase);
     </script>
 </body>
 </html>
