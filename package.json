@@ -1,0 +1,37 @@
+{
+  "name": "569-on-berea-property-management",
+  "version": "1.0.0",
+  "description": "Complete property management system for 569 on Berea guesthouse",
+  "main": "manager_portal.html",
+  "type": "module",
+  "scripts": {
+    "start": "echo 'Open manager_portal.html in your browser to start'",
+    "dev": "echo 'Static site - no build needed. Open any .html file in a browser.'"
+  },
+  "keywords": [
+    "property-management",
+    "guesthouse",
+    "booking-system",
+    "supabase",
+    "financial-tracking"
+  ],
+  "author": "569 on Berea",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "note": "All runtime dependencies are loaded from CDN (Supabase JS)"
+  },
+  "devDependencies": {
+    "note": "No build tools required - this is a pure static site"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/569onberea/property-management"
+  },
+  "bugs": {
+    "url": "https://github.com/569onberea/property-management/issues"
+  },
+  "homepage": "https://github.com/569onberea/property-management#readme"
+}
