@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "echo 'Open manager_portal.html in your browser to start'",
-    "dev": "echo 'Static site - no build needed. Open any .html file in a browser.'"
+    "dev": "echo 'Static site - no build needed. Open any .html file in a browser.'",
+    "build": "echo 'Static site - no build required. All files are production-ready.'"
   },
   "keywords": [
     "property-management",
@@ -19,12 +20,6 @@
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
-  },
-  "dependencies": {
-    "note": "All runtime dependencies are loaded from CDN (Supabase JS)"
-  },
-  "devDependencies": {
-    "note": "No build tools required - this is a pure static site"
   },
   "repository": {
     "type": "git",
